@@ -1,32 +1,37 @@
-
+import 'package:tuturial/factory.dart';
+import 'package:tuturial/observer.dart';
+import 'package:tuturial/singleton.dart';
+import 'package:tuturial/stratgy.dart';
 void main(List<String> arguments) {
-final emailNotification=NotificationFactory.createNotification( "email");
-emailNotification.send("Hello via Email!");
-final smsNotification=NotificationFactory.createNotification( "sms");
-smsNotification.send("Hello via SMS!"); 
+testObserver();
 }
- abstract class Notification{
-    void send( String message);
+
+testSingleton(){
+  final app1=App();
+  final app2=App();
+  print(identical(app1, app2)); // true
+}
+testFactory(){
+  final emailNotification=NotificationFactory.createNotification( "email");
+  emailNotification.send("Hello via Email!");
+  final smsNotification=NotificationFactory.createNotification( "sms");
+  smsNotification.send("Hello via SMS!"); 
+}
+ testStrategy(){
+  final cart=ShoppingCart();
+  cart.setPaymentStrategy(CreditCardPayment());
+  cart.checkout(100.0);
+  cart.setPaymentStrategy(PayPalPayment());
+  cart.checkout(200.0);
  }
- class EmailNotification implements Notification{
-    @override
-    void send(String message) {
-      print("Sending email notification: $message");
-    }
+ testObserver(){
+  final home=HomeManager();
+  final kettle=KettleObserver();
+  final light=LightObserver();
+  home.addObserver(kettle);
+  home.addObserver(light);
+  home.setAtHome(true);
+  home.setAtHome(false);
+  home.removeObserver(kettle);
+  home.setAtHome(true);
  }
- class SMSNotification implements Notification{
-    @override
-    void send(String message) {
-      print("Sending SMS notification: $message");
-    }
- }
-    class NotificationFactory{
-    static Notification createNotification(String type){
-      if(type == "email"){
-        return EmailNotification();
-      } else if(type == "sms"){
-        return SMSNotification();
-      } else {
-        throw Exception("Invalid notification type");
-      }
-        }    }
